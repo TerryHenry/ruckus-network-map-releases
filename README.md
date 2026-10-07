@@ -2,7 +2,7 @@
 
 A live map of a RUCKUS One venue: switches, APs and every connected client, plus the third-party gear RUCKUS One can't see. It adds spanning-tree, Layer-2 path and health views, with monitoring and alerts on top. It works entirely through the RUCKUS One API and the site's own switches and APs, so **nothing has to be installed on site**.
 
-It runs three ways: as a **desktop app**, as a **server** (Docker or Node), or as a **VM appliance (OVA)** that upgrades itself from signed releases.
+It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps itself up to date from signed releases.
 
 > Downloads are on the [Releases](https://github.com/TerryHenry/ruckus-network-map-releases/releases) page. The source code is private.
 
@@ -47,7 +47,7 @@ It runs three ways: as a **desktop app**, as a **server** (Docker or Node), or a
   - Every error is listed with its cause.
 - **IPs matched to MACs after a sweep:** the switches' ARP tables are read over SSH afterwards. Each answered IP gets its MAC, so devices already on the map (static ones included) get their IPs.
 - **Investigate an unknown IP:** works out where it's connected (Wi-Fi client, behind an AP, or behind a switch port) and adds it to the map in the right place.
-- **Local sweep:** from the desktop app or the appliance, using that machine's own network.
+- **Local sweep:** the appliance can also sweep the subnets it's connected to directly.
 
 ### Monitoring third-party devices
 - **Ping, SNMP v2c, MikroTik RouterOS API and ICX SSH CLI**, each with optional per-device credentials. SSH host keys are pinned on first use.
@@ -61,7 +61,7 @@ It runs three ways: as a **desktop app**, as a **server** (Docker or Node), or a
 - **RUCKUS One alarms, events and incidents** on the map and timeline.
 - **Syslog and SNMP trap receivers.**
 - **WAN probes run from the site:** the site's own APs and switches test the Internet connection.
-- **Alerts and history:** timelines and per-device charts. Alerts go to desktop notifications and webhooks (Slack, Mattermost, Google Chat).
+- **Alerts and history:** timelines and per-device charts. Alerts go to webhooks (Slack, Mattermost, Google Chat).
 
 ### Configuration and audit
 - **Switch config archive:** automatic backups, side-by-side diffs and restore.
@@ -79,24 +79,25 @@ It runs three ways: as a **desktop app**, as a **server** (Docker or Node), or a
 
 ---
 
-## Deployment
+## The appliance
 
-| | Desktop app | Server mode | Appliance (OVA) |
-|---|---|---|---|
-| Runs on | macOS (a Windows build is configured, untested) | Docker or Node 24 | VMware ESXi / Workstation / Fusion (Intel), VirtualBox |
-| Access | Local window | Browser, behind your HTTPS proxy | Browser, HTTPS built in |
-| Accounts | — | Admin and read-only viewer passwords | Admin and read-only viewer passwords |
-| Local subnet sweep | ✓ | — | ✓ |
-| Updates | Notified in Settings → Updates | Rebuild the image | **One-click, signed in-place upgrade** |
+| | |
+|---|---|
+| Hypervisors | VMware ESXi / Workstation / Fusion (Intel), VirtualBox |
+| Virtual hardware | 2 vCPU, 2 GB RAM, 12 GB disk, one NIC (DHCP) |
+| Network | On the site LAN, with Internet access to reach RUCKUS One |
+| Access | Web UI over HTTPS (self-signed certificate), with admin and read-only viewer passwords |
+| Base OS | Debian 12, with automatic security updates |
+| Updates | One-click, signed in-place upgrade |
 
-### Appliance quick start
+### Quick start
 1. Import `ruckus-network-map-<version>.ova` and power it on. It has 2 vCPU, 2 GB RAM, a 12 GB disk and one NIC using DHCP. Put the NIC on the site LAN.
 2. The VM console shows the `https://` address and the **initial password**. The web UI takes only a password, with no username. The console/SSH login `admin` uses the same initial password, and you choose a new one at first login.
 3. Open the address. Expect a warning about the self-signed certificate. Sign in, then enter your RUCKUS One API credentials in **Settings**.
 4. Set your own web password, or add a read-only viewer password, with `sudo netmap-passwd`. The console password is separate.
 
 ### Upgrades
-**Settings → Updates** shows the installed and latest versions. On the appliance, an admin clicks **Upgrade now**, or runs `sudo netmap-upgrade` on the console. The upgrade:
+**Settings → Updates** shows the installed and latest versions. An admin clicks **Upgrade now**, or runs `sudo netmap-upgrade` on the console. The upgrade:
 - downloads the new release and checks its **Ed25519 signature** and SHA-256 against the key built into the appliance;
 - swaps the new version in and restarts, keeping settings and history;
 - **rolls back automatically** if the new version doesn't come up healthy.
@@ -111,8 +112,8 @@ Upgrades started from the web UI never downgrade. Debian security updates instal
 
 ## Safety
 - **Read-only by default:** the app changes something on the network only when you choose an action that does, such as restoring a switch config or taking a manual config backup. Everything it runs on switches is a `show` command, except `trace-l2`, which sends probe packets on the chosen VLAN.
-- **Secrets are encrypted at rest:** the OS keychain on the desktop, an encryption key on the server and appliance.
-- **The server and appliance** keep admin and viewer roles separate, protect against cross-site requests, send strict security headers and rate-limit sign-in attempts.
+- **Secrets are encrypted at rest** on the appliance.
+- **The appliance** keeps admin and viewer roles separate, protect against cross-site requests, send strict security headers and rate-limit sign-in attempts.
 
 ## Release files
 Each release has:
