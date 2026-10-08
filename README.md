@@ -84,7 +84,7 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 | | |
 |---|---|
 | Hypervisors | VMware ESXi / Workstation / Fusion (Intel), VirtualBox |
-| Virtual hardware | 2 vCPU, 2 GB RAM, 12 GB disk, one NIC (DHCP) |
+| Virtual hardware | 2 vCPU, 2 GB RAM, 12 GB disk, one NIC (DHCP or static IP) |
 | Network | On the site LAN, with Internet access to reach RUCKUS One |
 | Access | Web UI over HTTPS (self-signed certificate), with admin and read-only viewer passwords |
 | Base OS | Debian 12, with automatic security updates |
@@ -95,6 +95,7 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 2. The VM console shows the `https://` address and the **initial password**. The web UI takes only a password, with no username. The console/SSH login `admin` uses the same initial password, and you choose a new one at first login.
 3. Open the address. Expect a warning about the self-signed certificate. Sign in, then enter your RUCKUS One API credentials in **Settings**.
 4. Set your own web password, or add a read-only viewer password, with `sudo netmap-passwd`. The console password is separate.
+5. Optional: give it a **static IP, gateway, DNS and NTP servers** in **Settings → Appliance network**, or with `sudo netmap-network` on the console. A change made from the web UI reverts on its own unless you confirm it from the new address within 3 minutes, so a typo can't strand the appliance.
 
 ### Upgrades
 **Settings → Updates** shows the installed and latest versions. An admin clicks **Upgrade now**, or runs `sudo netmap-upgrade` on the console. The upgrade:
