@@ -72,6 +72,12 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 - **Switch tools:** ping, traceroute, IP route table, MAC address table and DHCP server leases. No route from your computer to the switch is needed.
 - **AP tools:** ping and traceroute.
 
+### The appliance
+- **Network settings:** hostname, DHCP or a static IP, gateway, DNS and NTP servers, set in the web UI or with `sudo netmap-network` on the console. A change made from the web UI reverts on its own unless confirmed from the new address within 3 minutes.
+- **LLDP:** the appliance announces itself to its switch, and the network page shows which switch and port it's plugged into.
+- **Signed in-place upgrades:** one click, with automatic rollback. Debian security updates install automatically.
+- **Accounts:** an admin password and an optional read-only viewer password.
+
 ### Reports and export
 - **All-venues overview**
 - **PDF report**
@@ -85,7 +91,7 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 |---|---|
 | Hypervisors | VMware ESXi / Workstation / Fusion (Intel), VirtualBox |
 | Virtual hardware | 2 vCPU, 2 GB RAM, 12 GB disk, one NIC (DHCP or static IP) |
-| Network | On the site LAN, with Internet access to reach RUCKUS One |
+| Network | On the site LAN, with Internet access to reach RUCKUS One. Hostname, static IP, DNS, NTP and LLDP are configurable |
 | Access | Web UI over HTTPS (self-signed certificate), with admin and read-only viewer passwords |
 | Base OS | Debian 12, with automatic security updates |
 | Updates | One-click, signed in-place upgrade |
@@ -95,7 +101,7 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 2. The VM console shows the `https://` address and the **initial password**. The web UI takes only a password, with no username. The console/SSH login `admin` uses the same initial password, and you choose a new one at first login.
 3. Open the address. Expect a warning about the self-signed certificate. Sign in, then enter your RUCKUS One API credentials in **Settings**.
 4. Set your own web password, or add a read-only viewer password, with `sudo netmap-passwd`. The console password is separate.
-5. Optional: give it a **static IP, gateway, DNS and NTP servers** in **Settings → Appliance network**, or with `sudo netmap-network` on the console. A change made from the web UI reverts on its own unless you confirm it from the new address within 3 minutes, so a typo can't strand the appliance.
+5. Optional: set its **hostname, a static IP, gateway, DNS and NTP servers** in **Settings → Appliance network**, or with `sudo netmap-network` on the console. The appliance also runs **LLDP**: its switch sees it as a neighbor, and the page shows which switch port it's plugged into. LLDP can be turned off. A change made from the web UI reverts on its own unless you confirm it from the new address within 3 minutes, so a typo can't strand the appliance.
 
 ### Upgrades
 **Settings → Updates** shows the installed and latest versions. An admin clicks **Upgrade now**, or runs `sudo netmap-upgrade` on the console. The upgrade:
@@ -104,6 +110,15 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 - **rolls back automatically** if the new version doesn't come up healthy.
 
 Upgrades started from the web UI never downgrade. Debian security updates install automatically.
+
+---
+
+## What's new
+- **0.3.3:** set the appliance hostname. LLDP shows which switch port the appliance is on, and makes it visible to that switch.
+- **0.3.2:** static IP, gateway, DNS and NTP settings. Site sweeps retry addresses that don't reply. Upgrades also update the appliance's system files.
+- **0.3.1:** after a site sweep, the switches' ARP tables match answered IPs to devices on the map, including static ones.
+- **0.3.0:** update check and signed one-click upgrades. Internet-edge fix: a switch in the uplink path isn't treated as the gateway.
+- **0.2.x:** first appliance release.
 
 ---
 
