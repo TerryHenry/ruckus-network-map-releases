@@ -8,6 +8,20 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 
 ---
 
+## Screenshots
+
+![The map: switches, APs, clients and third-party gear for one venue, with the venue summary](docs/screenshots/topology.png)
+
+| | |
+|---|---|
+| ![Device panel](docs/screenshots/device.png)<br>**Device panel:** health, ports, neighbors, monitoring and remote tools for a switch | ![Link history](docs/screenshots/link-history.png)<br>**Link history:** traffic, a status bar over time, and every event at both ends |
+| ![Spanning tree](docs/screenshots/spanning-tree.png)<br>**Spanning tree:** per-VLAN root, modes, priorities and blocked ports | ![Monitored devices offline](docs/screenshots/monitored-offline.png)<br>**Monitored devices down:** a red banner, a separate counter and a pulsing ring on the map |
+| ![Appliance settings](docs/screenshots/settings-appliance.png)<br>**Appliance settings:** signed updates, hostname, static IP, DNS, NTP and LLDP (showing the switch port it's plugged into) | |
+
+<sub>All screenshots use the built-in demo venue (made-up data). The link history and the offline monitored devices were staged for illustration.</sub>
+
+---
+
 ## Feature sheet
 
 ### Topology and clients
