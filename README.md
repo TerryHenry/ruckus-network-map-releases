@@ -21,6 +21,8 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 - **IP memory:** static-IP devices keep their last known IP for 30 days after the source that found it forgets it.
 - **Change tracking:** devices added, removed or renamed in RUCKUS One appear on the timeline. A monitored device that is later adopted into RUCKUS One is merged, not duplicated.
 
+- **MSP multi-tenant:** with MSP credentials, every managed customer's venues appear in the venue picker, grouped by customer. Each customer's data is fetched in its own tenant, and the all-venues overview spans every customer.
+
 ### Views
 - **Topology, Spanning tree and Floorplan**, switchable from the toolbar.
 - **Floorplans** come from RUCKUS One, with APs and rogue APs placed on them.
@@ -58,6 +60,8 @@ It ships as a **VM appliance (OVA)**: import it, open the web UI, and it keeps i
 
 ### Health, alerts and history
 - **Link health:** errors and utilization per link, plus VLAN and Layer-3 consistency checks.
+- **Link history:** click any link to see its status over time, its traffic, and mesh SNR. It also lists the past 30 days of events: link up/down and errors on the switch port at each end, speed changes, and either end going down or coming back.
+- **Monitored devices that go down are hard to miss:** RUCKUS and monitored devices have separate offline counters. A red banner names each down device and how long it's been down, and those devices pulse on the map.
 - **RUCKUS One alarms, events and incidents** on the map and timeline.
 - **Syslog and SNMP trap receivers.**
 - **WAN probes run from the site:** the site's own APs and switches test the Internet connection.
@@ -114,6 +118,7 @@ Upgrades started from the web UI never downgrade. Debian security updates instal
 ---
 
 ## What's new
+- **0.4.0:** MSP multi-tenant support: every managed customer's venues in one app. Click any link for its history. Monitored devices that go offline get their own counter, a red banner and a pulsing ring on the map.
 - **0.3.3:** set the appliance hostname. LLDP shows which switch port the appliance is on, and makes it visible to that switch.
 - **0.3.2:** static IP, gateway, DNS and NTP settings. Site sweeps retry addresses that don't reply. Upgrades also update the appliance's system files.
 - **0.3.1:** after a site sweep, the switches' ARP tables match answered IPs to devices on the map, including static ones.
